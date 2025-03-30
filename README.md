@@ -38,3 +38,13 @@ laptop1.mydomain.com
 You can store further playbooks here that you would also like to execute.
 
 ### roles:
+
+
+
+## Special thanks go to:
+
+ !!! **LearnLinuxTV** !!!, thanks to the example config from Jay from LearnLinuxTV, I was inspired to dedicate myself to this project here and to adapt it to my needs.
+For those of you who want to learn Ansible, I can only recommend the playlist for Ansible from this channel!
+You can find the playlist here:
+
+https://youtu.be/3RiVKs8GHYQ?si=_2j3P9oWI25jBDIz
