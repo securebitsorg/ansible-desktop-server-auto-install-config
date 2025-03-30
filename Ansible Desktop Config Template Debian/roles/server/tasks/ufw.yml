@@ -1,0 +1,87 @@
+- name: ufw | install package
+  tags: ufw
+  package:
+    state: latest
+    name: ufw
+  notify:
+    - restart_ufw
+
+# dns
+- name: ufw | dns | allow dns (tcp)
+  tags: ufw
+  ufw:
+    comment: dns
+    rule: allow
+    port: '53'
+    proto: tcp
+  when:
+    - dns_server is defined
+    - dns_server == true
+
+- name: ufw | dns | allow dns (udp)
+  tags: ufw
+  ufw:
+    comment: dns
+    rule: allow
+    port: '53'
+    proto: udp
+  when:
+    - dns_server is defined
+    - dns_server == true
+
+# openssh
+- name: ufw | openssh | allow ssh (external)
+  tags: ufw
+  ufw:
+    comment: ssh from home network
+    rule: allow
+    port: ssh
+    src: 24.134.27.81/32
+  when:
+    - hetzner_instance is defined
+    - hetzner_instance == true
+
+- name: ufw | openssh | allow ssh (internal)
+  tags: ufw
+  ufw:
+    comment: ssh
+    rule: allow
+    port: ssh
+    src: '{{ item }}'
+  loop:
+    - 172.16.16.0/24 # insert your ip-address-range A
+    - 172.19.1.0/24/24 # insert your ip-address-range B
+    - 172.17.200.0/26 # insert your ip-address-range c
+    - 172.17.202.0/29 # insert your ip-address-range D
+   #- 172.16.251.0/24 # insert your ip-address-range E
+  when:
+    - hetzner_instance is defined
+    - hetzner_instance == false
+
+# web server
+- name: ufw | web server | allow http (80)
+  tags: ufw
+  ufw:
+    comment: http
+    rule: allow
+    port: '80'
+    proto: tcp
+  when:
+    - web_server is defined
+    - web_server == true
+
+- name: ufw | web server | allow https
+  tags: ufw
+  ufw:
+    comment: https
+    rule: allow
+    port: '443'
+    proto: tcp
+  when:
+    - web_server is defined
+    - web_server == true
+
+# all rules set, enable
+- name: ufw | enable firewall
+  ufw:
+    state: enabled

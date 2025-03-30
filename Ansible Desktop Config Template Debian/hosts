@@ -1,0 +1,7 @@
+[workstation]
+desktop1.mydomain.de
+desktop2.mydomain.de
+
+[server]
+server1.mydomain.de
+server2.mydomain.de

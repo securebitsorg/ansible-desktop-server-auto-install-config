@@ -1,0 +1,152 @@
+- name: users | marci | create group
+  tags: groups,marci,users
+  group:
+    name: marci
+    state: present
+
+- name: users | marci | create user
+  tags: marci,sudo,users
+  user:
+    name: marci
+    group: marci
+    groups: adm,ansible,{{ sudo_group }}
+    state: present
+    comment: "Marcel ,Dellmann"
+    password: "{{ marci_passwd }}"
+    shell: /bin/bash
+
+- name: users | marci | marci | add sudoers file
+  tags: marci,settings,julie,sudo,system,users
+  copy:
+    src: users/sudoers_marci
+    dest: /etc/sudoers.d/marci
+    owner: root
+    group: root
+    mode: 0440
+
+- name: users | marci | create .ssh directory
+  tags: dotfiles,marci,ssh,users
+  file:
+    path: "{{ item.dir }}"
+    state: directory
+    owner: marci
+    group: marci
+    mode: 0700
+  with_items:
+    - { dir: '/home/marci/.ssh' }
+
+- name: users | marci | add public key
+  tags: dotfiles,marci,ssh,ssh-keys,users
+  authorized_key:
+    user: marci
+    key: "{{ item }}"
+  with_file:
+    - users/marci/ssh/marci_id_ed25519.pub
+
+- name: users | marci | create config directories
+  tags: dotfiles,marci,tmux,users,vim,zsh
+  file:
+    path: /home/marci/{{ item.dir }}
+    state: directory
+    owner: marci
+    group: marci
+    mode: 0700
+  with_items:
+    - { dir: '.bash' }
+    - { dir: '.config' }
+    - { dir: '.config/htop' }
+    - { dir: '.config/mc' }
+    - { dir: '.tmux' }
+    - { dir: '.tmux/config' }
+    - { dir: '.tmux/plugins' }
+    - { dir: '.vim' }
+    - { dir: '.vim/autoload' }
+    - { dir: '.vim/bundle' }
+    - { dir: '.vim/colors' }
+    - { dir: '.vim/ftplugin' }
+    - { dir: '.zsh' }
+
+- name: users | marci | copy tmux config (server version)
+  tags: dotfiles,users,marci,tmux,users,vim,zsh
+  copy:
+    src: users/marci/tmux/tmux.conf.server
+    dest: /home/marci/.tmux.conf
+    owner: marci
+    group: marci
+    mode: 0600
+  when: "'server' not in group_names"
+
+- name: users | marci | copy tmux config (workstation version)
+  tags: dotfiles,users,marci,tmux,users,vim,zsh
+  copy:
+    src: users/marci/tmux/tmux.conf.workstation
+    dest: /home/marci/.tmux.conf
+    owner: marci
+    group: marci
+    mode: 0600
+  when: "'server' in group_names"
+
+- name: users | marci | copy dotfiles
+  tags: dotfiles,users,marci,tmux,users,vim,zsh
+  copy:
+    src: users/marci/{{ item.src }}
+    dest: /home/marci/{{ item.dest }}
+    owner: marci
+    group: marci
+    mode: 0600
+  with_items:
+    - { src: 'bash/bash_aliases', dest: '.bash/bash_aliases' }
+    - { src: 'bash/bash_profile', dest: '.bash_profile' }
+    - { src: 'bash/bash_prompt', dest: '.bash/bash_prompt' }
+    - { src: 'bash/bash_functions', dest: '.bash/bash_functions' }
+    - { src: 'bash/bashrc', dest: '.bashrc' }
+    - { src: 'bash/profile', dest: '.profile' }
+    - { src: 'htop/htoprc', dest: '.config/htop/htoprc' }
+    - { src: 'inputrc', dest: '.inputrc' }
+    - { src: 'zsh/zshrc', dest: '.zshrc' }
+
+- name: users | marci | clone tmux-completion plugin repository
+  tags: dotfiles,marci,users,tmux
+  git:
+    repo: https://github.com/srsudar/tmux-completion.git
+    dest: /home/marci/.tmux/plugins/completion
+    force: yes
+  notify: update_tmux_plugin_perms
+
+- name: users | marci | clone tmux-continuum plugin repository
+  tags: dotfiles,marci,users,tmux
+  git:
+    repo: https://github.com/tmux-plugins/tmux-continuum
+    dest: /home/marci/.tmux/plugins/continuum
+    force: yes
+  notify: update_tmux_plugin_perms
+
+- name: users | marci | clone tmux-resurrect plugin repository
+  tags: dotfiles,marci,users,tmux
+  git:
+    repo: https://github.com/tmux-plugins/tmux-resurrect
+    dest: /home/marci/.tmux/plugins/resurrect
+    force: yes
+  notify: update_tmux_plugin_perms
+
+- name: users | marci | copy individual zsh config files
+  tags: dotfiles,marci,users,zsh
+  copy:
+    src: users/marci/zsh/{{ item.src }}
+    dest: /home/marci/.zsh/{{ item.src }}
+    owner: marci
+    group: marci
+    mode: 0600
+  with_items:
+    - { src: 'aliases.zsh' }
+    - { src: 'bindkey.zsh' }
+    - { src: 'completion.zsh' }
+    - { src: 'exports.zsh' }
+    - { src: 'functions.zsh' }
+    - { src: 'history.zsh' }
+    - { src: 'path.zsh' }
+    - { src: 'plugins.zsh' }
+    - { src: 'prompt.zsh' }
+    - { src: 'setopt.zsh' }
+    - { src: 'theming.zsh' }
+

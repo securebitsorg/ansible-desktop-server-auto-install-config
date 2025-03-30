@@ -1,0 +1,16 @@
+- name: users | julie | add public key
+  tags: dotfiles,julie,ssh,ssh-keys,users
+  authorized_key:
+    user: julie
+    key: "{{ item }}"
+  with_file:
+    - users/julie/ssh/julie.pub
+
+- name: users | julie | add sudoers file
+  tags: settings,julie,sudo,system,users
+  copy:
+    src: users/sudoers_julie
+    dest: /etc/sudoers.d/julie
+    owner: root
+    group: root
+    mode: 0440

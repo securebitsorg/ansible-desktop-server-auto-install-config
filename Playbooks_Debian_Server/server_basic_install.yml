@@ -1,0 +1,27 @@
+---
+- hosts: all
+  become_user: root
+  become: yes
+
+  tasks:
+
+    - name: Update
+      ansible.builtin.apt:
+        update_cache: yes
+    
+    - name: Upgrade OS
+      ansible.builtin.apt:
+        upgrade: dist
+
+    - name: Install basic packages
+      ansible.builtin.apt:
+        name: 
+          - net-tools
+          - curl
+          - ufw
+          - gnupg2
+          - ntp
+          - apt-transport-https
+          - ca-certificates
+          - nano
+        state: present
