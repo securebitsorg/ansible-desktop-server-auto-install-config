@@ -1,3 +1,9 @@
+> [!IMPORTANT] 
+> # PLEASE NOTE !!!
+> First, the Ansible configs must be adapted to your needs. For example, the “Users”, “Devices”, “Groups”, “Packages”, etc.
+> 
+> This Ansible-Config is adapted to my personal setup :-)
+
 # Ansible Desktop Configs
 
 If you want to use Ansible to automatically set up all your workstations, laptops and servers, then this Ansible script repository will help you automate your installation.

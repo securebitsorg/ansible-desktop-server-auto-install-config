@@ -13,7 +13,3 @@ if [ -f /root/.bash_history ]; then
   rm /root/.bash_history
 fi
 
-find /home -type f -name .viminfo -exec rm {} \;
-if [ -f /root/.viminfo ]; then
-  rm /root/.viminfo
-fi

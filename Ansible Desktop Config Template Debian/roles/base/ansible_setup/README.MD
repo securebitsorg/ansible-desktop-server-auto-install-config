@@ -1,0 +1,1 @@
+**Configuration of how the log rotation of ansible should be defined.**

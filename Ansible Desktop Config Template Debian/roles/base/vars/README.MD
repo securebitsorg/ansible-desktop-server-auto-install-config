@@ -1,0 +1,1 @@
+**Insert here your variables for the distros**

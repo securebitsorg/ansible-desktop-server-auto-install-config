@@ -9,7 +9,7 @@
 
 - name: update_tmux_plugin_perms
   file:
-    path: /home/jay/.tmux/plugins
+    path: /home/marci/.tmux/plugins
     owner: marci
     group: marci
     recurse: true
